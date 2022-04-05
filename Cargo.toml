@@ -2,8 +2,14 @@
 name = "mdbook-pagetoc"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "A mdbook plugin that provides a table of contents for each page."
+homepage = "https://github.com/slowsage/mdbook-pagetoc"
+repository = "https://github.com/slowsage/mdbook-pagetoc"
+documentation = "https://github.com/slowsage/mdbook-pagetoc"
+readme = "README.md"
+license = "MPL-2.0"
+keywords = ["mdbook", "table", "contents",  "pagetoc", "toc"]
+exclude = [".github/"]
 
 [dependencies]
 mdbook = "0.4.17"

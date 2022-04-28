@@ -42,7 +42,7 @@ Sample image from [mdBook-pagetoc](https://github.com/JorelAli/mdBook-pagetoc):
         {{{ content }}}
     </main>
     ```
-- If not customizing, you can may want to add entries as appropriate to `.gitignore` to keep your repo clean:
+- If not customizing, you may want to add entries as appropriate to `.gitignore` to keep your repo clean:
   ```gitignore
   theme/index.hbs
   theme/pagetoc.css

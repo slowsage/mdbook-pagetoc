@@ -23,6 +23,7 @@ jobs:
           toolchain: stable
           target: ${{ matrix.platform.target }}
           override: true
+      - run: source $HOME/.cargo/env
 
       - uses: actions-rs/cargo@v1
         with:

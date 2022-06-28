@@ -45,13 +45,13 @@
     .pagetoc .pagetoc-H3 {
         padding-left: 40px;
     }
-    .pagetoc .pagetoc-H4 a {
+    .pagetoc .pagetoc-H4 {
         padding-left: 60px;
     }
     .pagetoc .pagetoc-H5 {
         display: none;
     }
-    .pagetoc .pagetoc-H6 a {
+    .pagetoc .pagetoc-H6 {
         display: none;
     }
 }

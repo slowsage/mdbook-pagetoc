@@ -29,6 +29,12 @@ var updateFunction = function() {
     });
 };
 
+const indent = (element, level) => {
+    if (level) {
+        element.style.paddingLeft = `${level * 20}px`;
+    }
+}
+
 // Populate sidebar on load
 window.addEventListener('load', function() {
     var pagetoc = document.getElementsByClassName("pagetoc")[0];
@@ -37,27 +43,24 @@ window.addEventListener('load', function() {
         var link = document.createElement("a");
 
         // Indent shows hierarchy
-        var indent = null;
         switch (el.parentElement.tagName) {
+            case "H1":
+                break;
             case "H2":
-                indent = 0;
+                indent(link, 1);
                 break;
             case "H3":
-                indent = 1;
+                indent(link, 2);
                 break;
             case "H4":
-                indent = 2;
+                indent(link, 3);
+                break;
+            default:
+                link.style.display = "none";
                 break;
         }
 
         link.appendChild(document.createTextNode(el.text));
-
-        if (typeof indent === 'number') {
-           link.style.paddingLeft = `${(indent + 1) * 20}px`;
-        } else {
-           link.style.display = "none";
-        }
-
         link.href = el.href;
         pagetoc.appendChild(link);
     });

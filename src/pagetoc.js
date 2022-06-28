@@ -37,23 +37,29 @@ window.addEventListener('load', function() {
         var link = document.createElement("a");
 
         // Indent shows hierarchy
-        var indent = "";
+        var indent = null;
         switch (el.parentElement.tagName) {
+            case "H1":
+                indent = 0;
             case "H2":
-                indent = "20px";
+                indent = 1;
                 break;
             case "H3":
-                indent = "40px";
+                indent = 2;
                 break;
             case "H4":
-                indent = "60px";
-                break;
-            default:
+                indent = 3;
                 break;
         }
 
         link.appendChild(document.createTextNode(el.text));
-        link.style.paddingLeft = indent;
+
+        if (indent) {
+           link.style.paddingLeft = `${indent * 20}px`;
+        } else {
+           link.style.display = "none";
+        }
+
         link.href = el.href;
         pagetoc.appendChild(link);
     });

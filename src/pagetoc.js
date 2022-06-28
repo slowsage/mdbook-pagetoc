@@ -39,23 +39,21 @@ window.addEventListener('load', function() {
         // Indent shows hierarchy
         var indent = null;
         switch (el.parentElement.tagName) {
-            case "H1":
-                indent = 0;
             case "H2":
-                indent = 1;
+                indent = 0;
                 break;
             case "H3":
-                indent = 2;
+                indent = 1;
                 break;
             case "H4":
-                indent = 3;
+                indent = 2;
                 break;
         }
 
         link.appendChild(document.createTextNode(el.text));
 
-        if (indent) {
-           link.style.paddingLeft = `${indent * 20}px`;
+        if (typeof indent === 'number') {
+           link.style.paddingLeft = `${(indent + 1) * 20}px`;
         } else {
            link.style.display = "none";
         }

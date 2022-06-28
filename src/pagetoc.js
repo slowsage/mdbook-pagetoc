@@ -42,7 +42,6 @@ window.addEventListener('load', function() {
     Array.prototype.forEach.call(elements, function(el) {
         var link = document.createElement("a");
 
-        // Indent shows hierarchy
         switch (el.parentElement.tagName) {
             case "H1":
                 break;

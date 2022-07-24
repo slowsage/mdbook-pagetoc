@@ -33,17 +33,19 @@ var updateFunction = function() {
 window.addEventListener('load', function() {
     var pagetoc = document.getElementsByClassName("pagetoc")[0];
     var elements = document.getElementsByClassName("header");
-    Array.prototype.forEach.call(elements, function (el) {
-        var link = document.createElement("a");
-        link.appendChild(document.createTextNode(el.text));
-        link.href = el.href;
-        link.classList.add("pagetoc-" + el.parentElement.tagName);
-        pagetoc.appendChild(link);
-      });
-    updateFunction.call();
+    
+    // Only display TOC if more than one header exists
+    if (elements.length > 1) {
+        Array.prototype.forEach.call(elements, function (el) {
+            var link = document.createElement("a");
+            link.appendChild(document.createTextNode(el.text));
+            link.href = el.href;
+            link.classList.add("pagetoc-" + el.parentElement.tagName);
+            pagetoc.appendChild(link);
+        });
+        updateFunction.call();
+    }
 });
-
-
 
 // Handle active elements on scroll
 window.addEventListener("scroll", updateFunction);

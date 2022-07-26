@@ -1,5 +1,5 @@
 # mdbook-pagetoc
-A mdbook plugin that provides a table of contents for each page. Uses [mdBook-pagetoc](https://github.com/JorelAli/mdBook-pagetoc).
+A mdbook plugin that provides a table of contents for each page. Uses css/js from [mdBook-pagetoc](https://github.com/JorelAli/mdBook-pagetoc).
 
 ## Show me
 
@@ -42,6 +42,7 @@ Sample image from [mdBook-pagetoc](https://github.com/JorelAli/mdBook-pagetoc):
         {{{ content }}}
     </main>
     ```
+
 - If not customizing, you may want to add entries as appropriate to `.gitignore` to keep your repo clean:
   ```gitignore
   theme/index.hbs
@@ -49,9 +50,12 @@ Sample image from [mdBook-pagetoc](https://github.com/JorelAli/mdBook-pagetoc):
   theme/pagetoc.js
   ```
 
-
-
-Please see https://github.com/JorelAli/mdBook-pagetoc for more details.
+- Customization: To autohide when only single header, add this snippet to `pagetoc.css`:
+  ```css
+  a[class^='pagetoc-H']:only-child {
+    display: none;
+  }
+  ```
 
 -----
 

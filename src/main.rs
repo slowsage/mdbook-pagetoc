@@ -1,12 +1,12 @@
-use mdbook_pagetoc::pagetoc_lib::PagetocPreprocessor;
 use clap::{Arg, ArgMatches, Command};
 use mdbook::errors::Error;
-use mdbook::preprocess::{CmdPreprocessor, Preprocessor };
+use mdbook::preprocess::{CmdPreprocessor, Preprocessor};
+use mdbook_pagetoc::pagetoc_lib::PagetocPreprocessor;
 use semver::{Version, VersionReq};
 use std::io;
 use std::process;
 
-pub fn make_app() -> Command<'static> {
+pub fn make_app() -> Command {
     Command::new("mdbook-pagetoc")
         .about("A mdbook preprocessor which adds a TOC for the page")
         .subcommand(
@@ -51,7 +51,9 @@ fn handle_preprocessing(pre: &dyn Preprocessor) -> Result<(), Error> {
 }
 
 fn handle_supports(pre: &dyn Preprocessor, sub_args: &ArgMatches) -> ! {
-    let renderer = sub_args.value_of("renderer").expect("Required argument");
+    let renderer = sub_args
+        .get_one::<String>("renderer")
+        .expect("Required argument");
     let supported = pre.supports_renderer(renderer);
     if supported {
         process::exit(0);

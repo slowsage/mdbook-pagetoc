@@ -1,11 +1,41 @@
+use chrono::Local;
+use env_logger::Builder;
 use log::info;
+use log::LevelFilter;
 use mdbook::book::Book;
 use mdbook::errors::Error;
 use mdbook::preprocess::{Preprocessor, PreprocessorContext};
 use mdbook::theme;
+use std::env;
 use std::fs;
+use std::io::Write;
 use std::str;
 
+fn init_logger() {
+    let mut builder = Builder::new();
+
+    builder.format(|formatter, record| {
+        writeln!(
+            formatter,
+            "{} [{}] ({}): {}",
+            Local::now().format("%Y-%m-%d %H:%M:%S"),
+            record.level(),
+            record.target(),
+            record.args()
+        )
+    });
+
+    if let Ok(var) = env::var("RUST_LOG") {
+        builder.parse_filters(&var);
+    } else {
+        // if no RUST_LOG provided, default to logging at the Info level
+        builder.filter(None, LevelFilter::Info);
+        // Filter extraneous html5ever not-implemented messages
+        builder.filter(Some("html5ever"), LevelFilter::Error);
+    }
+
+    builder.init();
+}
 pub mod pagetoc_lib {
     use super::*;
 
@@ -23,9 +53,7 @@ pub mod pagetoc_lib {
         }
 
         fn run(&self, ctx: &PreprocessorContext, book: Book) -> Result<Book, Error> {
-            env_logger::init_from_env(
-                env_logger::Env::default().filter_or(env_logger::DEFAULT_FILTER_ENV, "info"),
-            );
+            init_logger();
             let html_config = ctx.config.html_config().unwrap_or_default();
 
             let pagetoc_js = include_str!("pagetoc.js");

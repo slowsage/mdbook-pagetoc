@@ -1,6 +1,6 @@
 [package]
 name = "mdbook-pagetoc"
-version = "0.1.6"
+version = "0.1.7"
 edition = "2021"
 description = "A mdbook plugin that provides a table of contents for each page."
 homepage = "https://github.com/slowsage/mdbook-pagetoc"
@@ -19,3 +19,4 @@ semver = "1.0.16"
 anyhow = "1.0.69"
 log = "0.4.17"
 env_logger = "0.10.0"
+chrono = { version = "0.4", default-features = false, features = ["clock"] }

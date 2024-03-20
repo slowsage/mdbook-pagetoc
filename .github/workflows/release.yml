@@ -1,5 +1,5 @@
 # .github/workflows/release.yml
-
+name: Release
 on:
   release:
     types: [created]
@@ -12,25 +12,17 @@ jobs:
       fail-fast: false
       matrix:
         platform:
+          - {target: aarch64-unknown-linux-gnu, binext: "",zipext: ".tar.gz"}
+          - {target: aarch64-unknown-linux-musl, binext: "", zipext: ".tar.gz"}
           - {target: x86_64-unknown-linux-gnu, binext: "",zipext: ".tar.gz"}
           - {target: x86_64-unknown-linux-musl, binext: "", zipext: ".tar.gz"}
           - {target: x86_64-pc-windows-gnu, binext: ".exe", zipext: ".zip"}
     steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v4
+      - uses: taiki-e/install-action@v2
         with:
-          toolchain: stable
-          target: ${{ matrix.platform.target }}
-          override: true
-      - run: source $HOME/.cargo/env
-
-      - uses: actions-rs/cargo@v1
-        with:
-          use-cross: true
-          command: build
-          args: --release --target=${{ matrix.platform.target }}
-
+          tool: cross
+      - run: cross build --locked --release --target=${{ matrix.platform.target }}
       - run: echo "BINARY_NAME=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[].targets[] | select( .kind | map(. == "bin") | any ) | .name')" >> $GITHUB_ENV
 
       - if: ${{ matrix.platform.zipext == '.tar.gz' }}
@@ -40,7 +32,7 @@ jobs:
         run: 7z a ${{env.BINARY_NAME}}-${{github.ref_name}}-${{matrix.platform.target}}.zip ./target/${{matrix.platform.target}}/release/${{env.BINARY_NAME}}${{matrix.platform.binext}}
 
       - name: Release
-        uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: ${{env.BINARY_NAME}}-${{github.ref_name}}-${{matrix.platform.target}}${{matrix.platform.zipext}}
+        run: gh release upload  ${GITHUB_REF#refs/*/} ${{env.BINARY_NAME}}-${{github.ref_name}}-${{matrix.platform.target}}${{matrix.platform.zipext}}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

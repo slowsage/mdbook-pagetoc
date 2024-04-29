@@ -27,27 +27,18 @@ const autoCreatePagetoc = () => {
   main.insertAdjacentHTML("afterbegin", '<div class="sidetoc"><nav class="pagetoc"></nav></div>');
   return document.querySelector(".pagetoc");
 };
-const updateFunction = () => {
-  if (scrollTimeout) return; // Skip updates if within the cooldown period from a click
+
+
+const updateOnScroll = () => {
+  if (scrollTimeout) return;
   const headers = [...document.getElementsByClassName("header")];
-  const scrolledY = window.scrollY;
-  let lastHeader = null;
-
-  // Find the last header that is above the current scroll position
-  for (let i = headers.length - 1; i >= 0; i--) {
-    if (scrolledY >= headers[i].offsetTop) {
-      lastHeader = headers[i];
-      break;
+  const lastHeader = headers.reverse().find(el => window.scrollY >= el.offsetTop);
+  [...document.querySelector(".pagetoc").children].forEach(link => {
+    link.classList.remove("active");
+    if (lastHeader && lastHeader.href === link.href) {
+      link.classList.add("active");
     }
-  }
-
-  const pagetocLinks = [...document.querySelector(".pagetoc").children];
-  pagetocLinks.forEach(link => link.classList.remove("active"));
-
-  if (lastHeader) {
-    const activeLink = pagetocLinks.find(link => lastHeader.href === link.href);
-    if (activeLink) activeLink.classList.add("active");
-  }
+  });
 };
 
 window.addEventListener('load', () => {
@@ -61,8 +52,8 @@ window.addEventListener('load', () => {
     });
     pagetoc.appendChild(link);
   });
-  updateFunction();
+  updateOnScroll();
   listenActive();
-  window.addEventListener("scroll", updateFunction);
+  window.addEventListener("scroll", updateOnScroll);
 });
 

@@ -12,7 +12,7 @@ Sample image from [mdBook-pagetoc](https://github.com/JorelAli/mdBook-pagetoc):
 
 - Only supports the `html` renderer.
 
-- On the first run of `mdbook build`, it creates three files `index.hbs`, `pagetoc.css` and `pagetoc.js`.
+- On the first run of `mdbook build`, it creates two files `pagetoc.css` and `pagetoc.js`.
 
 - You can customize any of them after the first run.
 
@@ -27,7 +27,7 @@ Sample image from [mdBook-pagetoc](https://github.com/JorelAli/mdBook-pagetoc):
   additional-js  = ["theme/pagetoc.js"]
   ```
 
-- If using a custom `index.hbs`, the place marker `<div class="sidetoc"><nav class="pagetoc"></nav></div>` can be inserted manually inside the `<main>` tag. ie. Replace
+- The place marker `<div class="sidetoc"><nav class="pagetoc"></nav></div>` will be inserted inside the `<main>` tag. ie. This replaces
     ```hbs
     <main>
        {{{ content }}}
@@ -45,7 +45,6 @@ Sample image from [mdBook-pagetoc](https://github.com/JorelAli/mdBook-pagetoc):
 
 - If not customizing, you may want to add entries as appropriate to `.gitignore` to keep your repo clean:
   ```gitignore
-  theme/index.hbs
   theme/pagetoc.css
   theme/pagetoc.js
   ```

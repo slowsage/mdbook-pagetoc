@@ -5,7 +5,6 @@ use log::LevelFilter;
 use mdbook::book::Book;
 use mdbook::errors::Error;
 use mdbook::preprocess::{Preprocessor, PreprocessorContext};
-use mdbook::theme;
 use std::env;
 use std::fs;
 use std::io::Write;
@@ -41,6 +40,12 @@ pub mod pagetoc_lib {
 
     pub struct PagetocPreprocessor;
 
+    impl Default for PagetocPreprocessor {
+        fn default() -> Self {
+            Self::new()
+        }
+    }
+
     impl PagetocPreprocessor {
         pub fn new() -> PagetocPreprocessor {
             PagetocPreprocessor
@@ -63,21 +68,9 @@ pub mod pagetoc_lib {
                 None => ctx.root.join("theme"),
             };
 
-            let theme_index =
-                String::from_utf8(theme::Theme::new(theme_dir.as_path()).index).unwrap();
-            let anchor_tag = "<main>";
-            let pagetoc_snippet = "<div class=\"sidetoc\"><nav class=\"pagetoc\"></nav></div>";
-            let index_hbs = if !theme_index.contains(&pagetoc_snippet) {
-                theme_index.replace(anchor_tag, &(format!("{}{}", anchor_tag, pagetoc_snippet)))
-            } else {
-                theme_index
-            };
             fs::create_dir_all(theme_dir.as_path()).expect("Unable to create directory");
-            for (file_name, contents) in [
-                ("index.hbs", index_hbs.as_str()),
-                ("pagetoc.js", pagetoc_js),
-                ("pagetoc.css", pagetoc_css),
-            ] {
+            for (file_name, contents) in [("pagetoc.js", pagetoc_js), ("pagetoc.css", pagetoc_css)]
+            {
                 let file_path = theme_dir.join(file_name);
                 if !file_path.exists() {
                     info!("{}: Writing {}", self.name(), file_path.display());

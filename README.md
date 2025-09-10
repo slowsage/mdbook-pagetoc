@@ -56,6 +56,11 @@ Sample image from [mdBook-pagetoc](https://github.com/JorelAli/mdBook-pagetoc):
   }
   ```
 
+- Customization: To hide a header from the table of content:
+  ```md
+  ## Hidden from TOC {.toc-ignore}
+  ```
+
 -----
 
 ## Acknowledgments

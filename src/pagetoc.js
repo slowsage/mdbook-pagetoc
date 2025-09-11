@@ -57,7 +57,7 @@ window.addEventListener('load', () => {
     const parent = header.parentElement
     if (!parent.classList.contains("toc-ignore")) {
       const link = Object.assign(document.createElement("a"), {
-        textContent: header.text,
+        textContent: [...parent.childNodes].map(({ textContent }) => textContent).join(''),
         href: header.href,
         className: `pagetoc-${parent.tagName}`
       });

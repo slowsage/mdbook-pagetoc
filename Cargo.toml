@@ -1,6 +1,6 @@
 [package]
 name = "mdbook-pagetoc"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2021"
 description = "A mdbook plugin that provides a table of contents for each page."
 homepage = "https://github.com/slowsage/mdbook-pagetoc"
@@ -12,11 +12,11 @@ keywords = ["mdbook", "table", "contents", "pagetoc", "toc"]
 exclude = [".github/"]
 
 [dependencies]
-mdbook = { version = "0.4.37", default-features = false }
-clap = "4.5.4"
-serde_json = "1.0.116"
-semver = "1.0.22"
-anyhow = "1.0.82"
-log = "0.4.21"
-env_logger = "0.11.3"
+mdbook = { version = "0.4.52", default-features = false }
+clap = "4.5.48"
+serde_json = "1.0.145"
+semver = "1.0.27"
+anyhow = "1.0.100"
+log = "0.4.28"
+env_logger = "0.11.8"
 chrono = { version = "0.4", default-features = false, features = ["clock"] }

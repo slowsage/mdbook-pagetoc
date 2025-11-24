@@ -1,39 +1,19 @@
-use chrono::Local;
-use env_logger::Builder;
-use log::info;
-use log::LevelFilter;
-use mdbook::book::Book;
-use mdbook::errors::Error;
-use mdbook::preprocess::{Preprocessor, PreprocessorContext};
-use std::env;
+use mdbook_preprocessor::book::Book;
+use mdbook_preprocessor::errors::Result;
+use mdbook_preprocessor::{Preprocessor, PreprocessorContext};
 use std::fs;
-use std::io::Write;
-use std::str;
+use tracing::info;
 
 fn init_logger() {
-    let mut builder = Builder::new();
+    let filter = tracing_subscriber::EnvFilter::builder()
+        .with_env_var("RUST_LOG")
+        .with_default_directive(tracing_subscriber::filter::LevelFilter::INFO.into())
+        .from_env_lossy();
 
-    builder.format(|formatter, record| {
-        writeln!(
-            formatter,
-            "{} [{}] ({}): {}",
-            Local::now().format("%Y-%m-%d %H:%M:%S"),
-            record.level(),
-            record.target(),
-            record.args()
-        )
-    });
-
-    if let Ok(var) = env::var("RUST_LOG") {
-        builder.parse_filters(&var);
-    } else {
-        // if no RUST_LOG provided, default to logging at the Info level
-        builder.filter(None, LevelFilter::Info);
-        // Filter extraneous html5ever not-implemented messages
-        builder.filter(Some("html5ever"), LevelFilter::Error);
-    }
-
-    builder.init();
+    tracing_subscriber::fmt()
+        .without_time()
+        .with_env_filter(filter)
+        .init();
 }
 pub mod pagetoc_lib {
     use super::*;
@@ -57,7 +37,7 @@ pub mod pagetoc_lib {
             "mdbook-pagetoc"
         }
 
-        fn run(&self, ctx: &PreprocessorContext, book: Book) -> Result<Book, Error> {
+        fn run(&self, ctx: &PreprocessorContext, book: Book) -> Result<Book> {
             init_logger();
             let html_config = ctx.config.html_config().unwrap_or_default();
 
@@ -80,8 +60,8 @@ pub mod pagetoc_lib {
             Ok(book)
         }
 
-        fn supports_renderer(&self, renderer: &str) -> bool {
-            renderer == "html"
+        fn supports_renderer(&self, renderer: &str) -> Result<bool> {
+            Ok(renderer == "html")
         }
     }
 }

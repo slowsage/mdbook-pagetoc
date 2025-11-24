@@ -12,8 +12,10 @@ fn init_logger() {
 
     tracing_subscriber::fmt()
         .without_time()
+        .with_writer(std::io::stderr)
         .with_env_filter(filter)
-        .init();
+        .try_init()
+        .ok();
 }
 pub mod pagetoc_lib {
     use super::*;

@@ -16,6 +16,9 @@ Sample image from [mdBook-pagetoc](https://github.com/JorelAli/mdBook-pagetoc):
 
 - You can customize any of them after the first run.
 
+- [mdbook 0.5](https://github.com/rust-lang/mdBook/blob/master/CHANGELOG.md#mdbook-050) now ships with built-in support for showing the page
+  table of contents in the sidebar, see [PR 2822](https://github.com/rust-lang/mdBook/pull/2822)
+
 ## Configuration:
 
 - Add to `book.toml` config:

@@ -1,10 +1,23 @@
 use clap::{Arg, ArgMatches, Command};
+use mdbook_pagetoc::PagetocPreprocessor;
 use mdbook_preprocessor::errors::Result;
-use mdbook_preprocessor::{parse_input, Preprocessor};
-use mdbook_pagetoc::pagetoc_lib::PagetocPreprocessor;
+use mdbook_preprocessor::{Preprocessor, parse_input};
 use semver::{Version, VersionReq};
 use std::io;
 use std::process;
+
+fn init_logger() {
+    let filter = tracing_subscriber::EnvFilter::builder()
+        .with_env_var("RUST_LOG")
+        .with_default_directive(tracing_subscriber::filter::LevelFilter::INFO.into())
+        .from_env_lossy();
+
+    tracing_subscriber::fmt()
+        .without_time()
+        .with_writer(std::io::stderr)
+        .with_env_filter(filter)
+        .init();
+}
 
 pub fn make_app() -> Command {
     Command::new("mdbook-pagetoc")
@@ -17,6 +30,7 @@ pub fn make_app() -> Command {
 }
 
 fn main() {
+    init_logger();
     let matches = make_app().get_matches();
     let preprocessor = PagetocPreprocessor::new();
 

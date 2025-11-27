@@ -1,69 +1,74 @@
+use mdbook_core::utils::fs;
 use mdbook_preprocessor::book::Book;
 use mdbook_preprocessor::errors::Result;
 use mdbook_preprocessor::{Preprocessor, PreprocessorContext};
-use std::fs;
+use serde::Deserialize;
+use std::path::Path;
 use tracing::info;
 
-fn init_logger() {
-    let filter = tracing_subscriber::EnvFilter::builder()
-        .with_env_var("RUST_LOG")
-        .with_default_directive(tracing_subscriber::filter::LevelFilter::INFO.into())
-        .from_env_lossy();
-
-    tracing_subscriber::fmt()
-        .without_time()
-        .with_writer(std::io::stderr)
-        .with_env_filter(filter)
-        .try_init()
-        .ok();
+#[derive(Debug, Deserialize)]
+#[serde(default)]
+struct PagetocConfig {
+    scroll_offset: i32,
 }
-pub mod pagetoc_lib {
-    use super::*;
 
-    pub struct PagetocPreprocessor;
+impl Default for PagetocConfig {
+    fn default() -> Self {
+        Self { scroll_offset: 10 }
+    }
+}
 
-    impl Default for PagetocPreprocessor {
-        fn default() -> Self {
-            Self::new()
-        }
+pub struct PagetocPreprocessor;
+
+impl Default for PagetocPreprocessor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl PagetocPreprocessor {
+    pub fn new() -> PagetocPreprocessor {
+        PagetocPreprocessor
+    }
+}
+
+impl Preprocessor for PagetocPreprocessor {
+    fn name(&self) -> &str {
+        "mdbook-pagetoc"
     }
 
-    impl PagetocPreprocessor {
-        pub fn new() -> PagetocPreprocessor {
-            PagetocPreprocessor
-        }
-    }
+    fn run(&self, ctx: &PreprocessorContext, book: Book) -> Result<Book> {
+        let html_config = ctx.config.html_config().unwrap_or_default();
 
-    impl Preprocessor for PagetocPreprocessor {
-        fn name(&self) -> &str {
-            "mdbook-pagetoc"
-        }
+        let config: PagetocConfig = ctx
+            .config
+            .get("preprocessor.pagetoc")
+            .ok()
+            .flatten()
+            .unwrap_or_default();
 
-        fn run(&self, ctx: &PreprocessorContext, book: Book) -> Result<Book> {
-            init_logger();
-            let html_config = ctx.config.html_config().unwrap_or_default();
+        let pagetoc_js = include_str!("pagetoc.js")
+            .replace("{{SCROLL_OFFSET}}", &config.scroll_offset.to_string());
+        let pagetoc_css = include_str!("pagetoc.css");
 
-            let pagetoc_js = include_str!("pagetoc.js");
-            let pagetoc_css = include_str!("pagetoc.css");
-            let theme_dir = match html_config.theme {
-                Some(ref theme) => ctx.root.join(theme),
-                None => ctx.root.join("theme"),
-            };
+        let theme_dir = ctx
+            .root
+            .join(html_config.theme.as_deref().unwrap_or(Path::new("theme")));
 
-            fs::create_dir_all(theme_dir.as_path()).expect("Unable to create directory");
-            for (file_name, contents) in [("pagetoc.js", pagetoc_js), ("pagetoc.css", pagetoc_css)]
-            {
-                let file_path = theme_dir.join(file_name);
-                if !file_path.exists() {
-                    info!("{}: Writing {}", self.name(), file_path.display());
-                    fs::write(file_path, contents).expect("Unable to write file");
-                }
+        for (name, contents) in [
+            ("pagetoc.js", pagetoc_js.as_str()),
+            ("pagetoc.css", pagetoc_css),
+        ] {
+            let path = theme_dir.join(name);
+            if !path.exists() {
+                info!("Writing {}", path.display());
+                fs::write(&path, contents)?;
             }
-            Ok(book)
         }
+        Ok(book)
+    }
 
-        fn supports_renderer(&self, renderer: &str) -> Result<bool> {
-            Ok(renderer == "html")
-        }
+    fn supports_renderer(&self, renderer: &str) -> Result<bool> {
+        Ok(renderer == "html")
     }
 }

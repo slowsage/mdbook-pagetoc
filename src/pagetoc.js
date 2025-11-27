@@ -31,7 +31,7 @@ const updateFunction = () => {
   if (scrollTimeout) return; // Skip updates if within the cooldown period from a click
   const headers = [...document.getElementsByClassName("header")];
   const menuBarHeight = document.getElementById('mdbook-menu-bar')?.offsetHeight || 0;
-  const scrolledY = window.scrollY + menuBarHeight + 10;
+  const scrolledY = window.scrollY + menuBarHeight + {{SCROLL_OFFSET}};
   let lastHeader = null;
 
   // Find the last header that is above the current scroll position
@@ -42,7 +42,9 @@ const updateFunction = () => {
     }
   }
 
-  const pagetocLinks = [...document.querySelector(".pagetoc").children];
+  const pagetoc = document.querySelector(".pagetoc");
+  if (!pagetoc) return;
+  const pagetocLinks = [...pagetoc.children];
   pagetocLinks.forEach(link => link.classList.remove("active"));
 
   if (lastHeader) {

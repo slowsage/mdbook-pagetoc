@@ -177,12 +177,14 @@ dependencies = [
 
 [[package]]
 name = "mdbook-pagetoc"
-version = "0.2.1"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "clap",
+ "mdbook-core",
  "mdbook-preprocessor",
  "semver",
+ "serde",
  "serde_json",
  "tracing",
  "tracing-subscriber",
